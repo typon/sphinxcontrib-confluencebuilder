@@ -15,6 +15,8 @@ from .exceptions import ConfluenceSeraphAuthenticationFailedUrlError
 from .exceptions import ConfluenceTimeoutError
 from .std.confluence import API_REST_BIND_PATH
 from requests.adapters import HTTPAdapter
+from requests_ntlm import HttpNtlmAuth
+
 import json
 import requests
 import ssl
@@ -77,9 +79,7 @@ class Rest:
             session.mount(self.url, adapter)
 
         if config.confluence_server_user:
-            session.auth = (
-                config.confluence_server_user,
-                config.confluence_server_pass)
+            session.auth = HttpNtlmAuth(config.confluence_server_user, config.confluence_server_pass)
         return session
 
     def get(self, key, params):
